@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CAnALendario</title>
+    <link rel="stylesheet" href="./zstyle.css" />
+  </head>
+  <body>
+    <h1>CAnALendario</h1>
+
+    <div class="calendar-container">
+      <!-- FullCalendar verrà renderizzato qui -->
+      <div id="calendar"></div>
+    </div>
+
+    <!-- Form per aggiungere evento -->
+    <div id="addEventForm">
+      <h3>Aggiungi Evento</h3>
+      <input type="text" id="eventTitle" placeholder="Titolo dell'evento" />
+      <input type="time" id="eventTime" />
+      <textarea
+        id="eventDescription"
+        placeholder="Descrizione evento"
+      ></textarea>
+      <button id="saveEvent">Salva Evento</button>
+      <button id="cancelEvent">Annulla</button>
+    </div>
+
+    <script src="./ts/calendar.js"></script>
+  </body>
+</html>

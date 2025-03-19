@@ -1,0 +1,172 @@
+/* ✅ Reset generale per eliminare margini e padding di default */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ✅ Stile generale per il corpo della pagina */
+body {
+  font-family: Arial, sans-serif; /* Font chiaro e leggibile */
+  background-color: #f9f9f9;
+  color: #333;
+  padding: 20px;
+}
+
+/* ✅ Stile per il titolo principale */
+h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #1d72b8;
+  margin-bottom: 20px;
+}
+
+/* ✅ Contenitore del calendario */
+.calendar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Stile per l'elemento del calendario */
+#calendar {
+  width: 100%; /* Larghezza dinamica */
+  max-width: 900px;
+  height: 600px; /* Altezza fissa */
+  margin: 20px auto;
+  border: 1px solid #ccc;
+}
+
+/* ✅ Stile per il form */
+#addEventForm {
+  display: none; /* Nasconde il form finché non viene aperto */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 90%;
+  max-width: 400px;
+}
+
+/* ✅ Stile per l'intestazione del form */
+#addEventForm h3 {
+  font-size: 1.5rem;
+  color: #1d72b8;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* ✅ Stile per input e textarea nel form */
+#addEventForm input,
+#addEventForm textarea,
+#addEventForm button {
+  width: 100%; /* Riempie l'intera larghezza del contenitore */
+  margin-bottom: 10px;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+
+/* ✅ Stile per il campo di testo */
+#addEventForm textarea {
+  resize: none; /* Impedisce il ridimensionamento */
+  height: 80px;
+}
+
+/* ✅ Stile per il pulsante di salvataggio */
+#saveEvent {
+  background-color: #1d72b8;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#saveEvent:hover {
+  background-color: #166fa7;
+}
+
+/* ✅ Stile per il pulsante di annullamento */
+#cancelEvent {
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#cancelEvent:hover {
+  background-color: #bbb;
+}
+
+/* ✅ Effetto hover sui bottoni */
+button {
+  font-size: 1rem;
+  border-radius: 4px;
+}
+
+/* ✅ Stile per gli eventi nel calendario */
+.fc-event {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* ✅ Hover sugli eventi */
+.fc-event:hover {
+  background-color: #1976d2;
+}
+
+/* ✅ Stile per il giorno attivo */
+.fc-day-today {
+  background-color: #e3f2fd !important;
+}
+
+/* ✅ Stile per la navigazione del calendario */
+.fc-header-toolbar {
+  margin-bottom: 10px;
+}
+
+/* ✅ Stile per le icone di navigazione */
+.fc-button {
+  background-color: #1d72b8 !important;
+  color: white !important;
+  border: none !important;
+  padding: 5px 10px !important;
+  border-radius: 4px !important;
+}
+
+.fc-button:hover {
+  background-color: #166fa7 !important;
+}
+
+/* ✅ Adattamento mobile */
+@media (max-width: 768px) {
+  #calendar {
+    width: 100%; /* Riempie tutto lo schermo */
+  }
+
+  #addEventForm {
+    width: 100%; /* Form largo quanto lo schermo */
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+}
