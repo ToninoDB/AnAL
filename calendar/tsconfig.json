@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es6", // ✅ Usa codice ECMAScript moderno
+    "module": "esnext", // ✅ Usa moduli ES compatibili con i browser
+    "moduleResolution": "node", // ✅ Risolve i moduli in stile Node.js
+    "outDir": "./src/main/resources/static/ts", // ✅ Percorso per il file generato
+    "strict": true,
+    "esModuleInterop": true, // ✅ Permette di importare moduli CommonJS
+    "skipLibCheck": true, // ✅ Ignora errori nei file .d.ts esterni
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/main/resources/static/ts/**/*.ts",
+    "src/main/resources/stat

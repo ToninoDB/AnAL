@@ -1,33 +1,26 @@
-import { Calendar } from "@fullcalendar/core";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import { getEvents, createEvent, deleteEvent } from "./eventiService";
+import { createEvent, deleteEvent, getEvents } from "./eventiService";
 
-// ✅ Variabili globali per gestire lo stato del calendario e della data selezionata
-let selectedDate: string | null = null;
-let calendar: Calendar;
+let calendar: any;
 
-// ✅ Ottieni la data di oggi
 function getToday(): string {
-  const today = new Date();
-  return today.toISOString().split("T")[0];
+  return new Date().toISOString().split("T")[0];
 }
 
-// ✅ Carica dinamicamente il calendario
 async function loadCalendar() {
-  const today = getToday(); // Prende la data odierna
-
-  // 🔥 Recupera automaticamente gli eventi di oggi
+  const today = getToday();
   const events = await getEvents(`${today}T00:00`, `${today}T23:59`);
 
   const calendarEl = document.getElementById("calendar")!;
   calendarEl.innerHTML = "";
 
-  calendar = new Calendar(calendarEl, {
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-    initialView: "timeGridDay", // Vista iniziale giornaliera
-    initialDate: today, // Imposta la data di partenza su oggi
+  calendar = new window.FullCalendar.Calendar(calendarEl, {
+    plugins: [
+      window.FullCalendar.dayGridPlugin,
+      window.FullCalendar.timeGridPlugin,
+      window.FullCalendar.interactionPlugin,
+    ],
+    initialView: "timeGridDay",
+    initialDate: today,
     editable: true,
     selectable: true,
     headerToolbar: {
@@ -35,84 +28,74 @@ async function loadCalendar() {
       center: "title",
       right: "timeGridDay,dayGridMonth",
     },
-    events: events,
-    eventContent: function (info) {
-      return {
-        html: `<div>
-                  <b>${info.event.title}</b><br>
-                  <small>${info.event.extendedProps.tag}</small>
-              </div>`,
-      };
-    },
-    dateClick: (info) => openEventForm(info.dateStr),
-
-    eventClick: async (info) => {
+    events: events.map((event: any) => ({
+      id: event.id?.toString(),
+      title: event.titolo,
+      start: event.dataInizio,
+      end: event.dataFine,
+      color: event.colore || "#3788d8",
+    })),
+    dateClick: (info: { dateStr: string }) => openEventForm(info.dateStr),
+    eventClick: async (info: { event: any }) => {
       if (confirm(`Vuoi eliminare l'evento: ${info.event.title}?`)) {
         await deleteEvent(Number(info.event.id));
-        calendar.refetchEvents(); // 🔄 Ricarica gli eventi
+        calendar.refetchEvents(); // 🔄 Aggiorna il calendario
       }
     },
   });
 
-  calendar.render(); // Mostra il calendario
+  calendar.render(); // ✅ Renderizza il calendario
 }
 
-// ✅ Apre il form per creare un nuovo evento
-function openEventForm(date: string) {
-  selectedDate = date; // Memorizza la data selezionata
+const openEventForm = (date: string) => {
   const form = document.getElementById("addEventForm") as HTMLElement;
-  form.style.display = "block"; // Mostra il form per creare l'evento
-}
+  form.style.display = "block";
 
-// ✅ Salva l'evento dal form e lo invia al backend
-async function saveEvent() {
+  document.getElementById("saveEvent")!.onclick = () => saveEvent(date);
+};
+
+const saveEvent = async (date: string) => {
   const title = (document.getElementById("eventTitle") as HTMLInputElement)
-    .value; // Recupera il titolo dell'evento dal form
-  const time = (document.getElementById("eventTime") as HTMLInputElement).value; // Recupera l'orario dell'evento dal form
+    .value;
+  const startTime = (
+    document.getElementById("eventStartTime") as HTMLInputElement
+  ).value;
+  const endTime = (document.getElementById("eventEndTime") as HTMLInputElement)
+    .value;
   const description = (
     document.getElementById("eventDescription") as HTMLTextAreaElement
-  ).value; // Recupera la descrizione dell'evento dal form
+  ).value;
 
-  // ✅ Verifica che tutti i campi siano compilati
-  if (selectedDate && title && time) {
-    const newEvent = {
-      titolo: title, // Titolo dell'evento
-      descrizione: description, // Descrizione dell'evento
-      dataInizio: `${selectedDate}T${time}:00`, // Data e ora di inizio
-      dataFine: `${selectedDate}T${time}:00`, // Data e ora di fine
-      colore: "#2196F3", // Colore predefinito dell'evento
-      tag: "Generale", // Tag predefinito dell'evento
-    };
+  if (title && startTime && endTime) {
+    try {
+      const newEvent = await createEvent({
+        titolo: title,
+        descrizione: description,
+        dataInizio: `${date}T${startTime}`,
+        dataFine: `${date}T${endTime}`,
+        colore: "#2196F3",
+        tag: "Generale",
+      });
 
-    await createEvent(newEvent); // 🔥 Salva l'evento nel backend
-    calendar.refetchEvents(); // 🔄 Ricarica gli eventi aggiornati
-    closeEventForm(); // ✅ Chiude il form dopo il salvataggio
-  } else {
-    alert("Completa tutti i campi prima di salvare!"); // ⚠️ Messaggio di errore se mancano campi
+      calendar.addEvent({
+        id: newEvent.id?.toString(),
+        title: newEvent.titolo,
+        start: newEvent.dataInizio,
+        end: newEvent.dataFine,
+        color: newEvent.colore,
+      });
+
+      closeEventForm();
+    } catch (error) {
+      alert("Errore nella creazione dell'evento");
+    }
   }
-}
+};
 
-// ✅ Chiude il form per la creazione dell'evento
-function closeEventForm() {
-  const form = document.getElementById("addEventForm") as HTMLElement;
-  form.style.display = "none"; // Nasconde il form
-  resetForm(); // ✅ Resetta i campi del form
-}
+const closeEventForm = () => {
+  (document.getElementById("addEventForm") as HTMLElement).style.display =
+    "none";
+};
 
-// ✅ Resetta i campi del form
-function resetForm() {
-  (document.getElementById("eventTitle") as HTMLInputElement).value = ""; // Pulisce il campo del titolo
-  (document.getElementById("eventTime") as HTMLInputElement).value = ""; // Pulisce il campo dell'orario
-  (document.getElementById("eventDescription") as HTMLTextAreaElement).value =
-    ""; // Pulisce il campo della descrizione
-  selectedDate = null; // Resetta la data selezionata
-}
-
-// ✅ Aggiunge i listener per il form
-document.getElementById("saveEvent")!.addEventListener("click", saveEvent); // Assegna al pulsante "Salva" la funzione `saveEvent`
-document
-  .getElementById("cancelEvent")!
-  .addEventListener("click", closeEventForm); // Assegna al pulsante "Annulla" la funzione `closeEventForm`
-
-// ✅ Avvia il calendario quando la pagina viene caricata
-document.addEventListener("DOMContentLoaded", loadCalendar); // Chiama `loadCalendar` al caricamento della pagina
+// ✅ Carica il calendario al caricamento della pagina
+document.addEventListener("DOMContentLoaded", loadCalendar);

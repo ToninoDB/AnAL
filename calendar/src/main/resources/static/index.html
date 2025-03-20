@@ -4,21 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CAnALendario</title>
+
+    <!-- FullCalendar CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./zstyle.css" />
   </head>
   <body>
     <h1>CAnALendario</h1>
 
+    <!-- Container del calendario -->
     <div class="calendar-container">
-      <!-- FullCalendar verrà renderizzato qui -->
       <div id="calendar"></div>
     </div>
 
     <!-- Form per aggiungere evento -->
-    <div id="addEventForm">
+    <div id="addEventForm" class="hidden">
       <h3>Aggiungi Evento</h3>
       <input type="text" id="eventTitle" placeholder="Titolo dell'evento" />
-      <input type="time" id="eventTime" />
+      <input type="time" id="eventStartTime" />
+      <input type="time" id="eventEndTime" />
       <textarea
         id="eventDescription"
         placeholder="Descrizione evento"
@@ -27,6 +34,10 @@
       <button id="cancelEvent">Annulla</button>
     </div>
 
-    <script src="./ts/calendar.js"></script>
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/locales/it.js"></script>
+    <!-- Script TypeScript -->
+    <script src="./ts/calendario.js"></script>
   </body>
 </html>

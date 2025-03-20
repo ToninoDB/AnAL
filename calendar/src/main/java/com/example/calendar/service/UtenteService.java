@@ -1,38 +1,46 @@
 package com.example.calendar.service;
 
+import com.example.calendar.exception.ResourceNotFoundException;
 import com.example.calendar.model.Utente;
 import com.example.calendar.repository.UtenteRepository;
 
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UtenteService {
 
     @Autowired
     private UtenteRepository utenteRepo;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
+    // Restituisce tutti gli utenti (opzionale)
     public List<Utente> getAllUtenti() {
         return utenteRepo.findAll();
     }
 
+    // Cerca utente tramite ID
     public Optional<Utente> getUtenteById(Long id) {
-        return utenteRepo.findById(id);
+        return Optional.of(utenteRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Utente non trovato con id: " + id)));
     }
 
+    // Crea un nuovo utente (senza controllo di username o email duplicati)
     public Utente createUtente(Utente utente) {
-        utente.setPassword(passwordEncoder.encode(utente.getPassword())); // Hashing della password
+        utente.setPassword(utente.getPassword());
         return utenteRepo.save(utente);
     }
 
+    // Elimina un utente
     public void deleteUtente(Long id) {
+        if (!utenteRepo.existsById(id)) {
+            throw new ResourceNotFoundException("Utente non trovato con id: " + id);
+        }
         utenteRepo.deleteById(id);
     }
 }
