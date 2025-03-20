@@ -11,4 +11,8 @@
   },
   "include": [
     "src/main/resources/static/ts/**/*.ts",
-    "src/main/resources/stat
+    "src/main/resources/static/ts/global.d.ts"
+  ],
+
+  "exclude": ["node_modules"]
+}
